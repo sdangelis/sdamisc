@@ -1,0 +1,22 @@
+Package: smisc
+Title: A convenience package bringing together commonly used R functions
+Version: 0.0.0.9000
+Authors@R: 
+    person("Simone", "De Angelis", , "side97.11@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: What the package does (one paragraph).
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+Depends:
+  R (>= 4.1.0),
+Imports:
+  DBI,
+  dplyr, 
+  RMariaDB,
+  JuliaCall,
+  ggplot2,
+  stringr,
+  
+
