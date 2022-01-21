@@ -11,12 +11,14 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Depends:
   R (>= 4.1.0),
+  dplyr
 Imports:
   DBI,
-  dplyr, 
   RMariaDB,
   JuliaCall,
   ggplot2,
   stringr,
+  tidyr,
+  data.table
   
 

@@ -1,3 +1,7 @@
+
+
+
+
 # Misc --------------------------------------------------------------------
 
 getName <- function(path) {
@@ -24,9 +28,9 @@ getName <- function(path) {
 #' @export
 splitBp <- \(bed) {
   bed |>
-    mutate(!!names(bed)[3] := get(names(bed)[3]) - 1) |>
-    pivot_longer(colnames(bed[2:3])) |>
-    select(-name) |>
-    mutate(end = value + 1) |>
-    relocate(!!colnames(bed[1]), value, end)
+    dplyr::mutate(!!names(bed)[3] := get(names(bed)[3]) - 1) |>
+    tidyr::pivot_longer(colnames(bed[2:3])) |>
+    dplyr::select(-name) |>
+    dplyr::mutate(end = value + 1) |>
+    dplyr::relocate(!!colnames(bed[1]), value, end)
 }
