@@ -32,5 +32,6 @@ splitBp <- \(bed) {
     tidyr::pivot_longer(colnames(bed[2:3])) |>
     dplyr::select(-name) |>
     dplyr::mutate(end = value + 1) |>
-    dplyr::relocate(!!colnames(bed[1]), value, end)
+    dplyr::rename(start = value) |>
+    dplyr::relocate(!!colnames(bed[1]), start, end)
 }
