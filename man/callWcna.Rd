@@ -13,7 +13,7 @@ chromosome and direction ("gain","loss","normal") columns}
 \item{chr}{the chromosome of interest. must match the format
 of the segment table}
 
-\item{thershold}{float, the fraction of the chromosome needed to be
+\item{threshold}{float, the fraction of the chromosome needed to be
 in a direction to call. Default = 0.95}
 }
 \value{

@@ -21,13 +21,13 @@ callWcna <- \(segs, chr, threshold = 0.95) {
   #' @note This function estimates the length of the genome
   #' from the length of all segments in the table
   #' @note if the given chromosome is not found returns NA.
-  #' @note thresholds below < 0.5 always return gains as long as it passes the threshold,
+  #' @note thresholds below < 0.5 always return gains as long as it passes it,
   #' regardless of whether there are more losses.
   #' @param chr the chromosome of interest. must match the format
   #' of the segment table
   #' @param segs data frame with CNA length,
   #' chromosome and direction ("gain","loss","normal") columns
-  #' @param thershold float, the fraction of the chromosome needed to be
+  #' @param threshold float, the fraction of the chromosome needed to be
   #' in a direction to call. Default = 0.95
   #' @return "gain", "loss", "normal" or NA, a string with the status
   #' of the chromosome
@@ -64,12 +64,13 @@ callArmCna <- \(segs, chr, threshold = 0.95, arms = bands) {
   #' @note for full documentation see callWcna.
   #' @note This function estimates the length of the genome
   #' from the length of all segments in the table
-  #' @param chromosome the chromosome of interest.
+  #' @param chr the chromosome of interest.
   #' must match the format of the segment table
-  #' @param segments data frame with CNA length,
+  #' @param segs data frame with CNA length,
   #' chromosome and direction ("gain","loss","normal") columns
-  #' @param thershold float, the fraction of the chromosome
-  #' needed to be in a direction to call. Default = 0.95
+  #' @param threshold float, the fraction of the chromosome
+  #' needed to be in a direction to call. Default = 0.9
+  #' @param arms a table with the list of p and q arm location
   #' @return a named vector with the arm and "gain", "loss", "normal" or NA.
   #' @seealso \code{\link{callWcna}}
   #' @export

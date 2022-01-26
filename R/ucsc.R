@@ -1,7 +1,7 @@
 # USCS + SQL --------------------------------------------------------------
 #' deal with the UCSC genome browser mySQL server
 
-queryUcsc <- \(query, params = NULL, genome = "hg38"){
+queryUcsc <- \(query, params = NULL, genome = "hg38") {
   #' wrapper around dbGetQuery to query the UCSC genome browser mySQL server
   #' @param genome a UCSC genome that represents the server that will connect to
   #' @param query a SELECT SQL query to run
@@ -13,16 +13,17 @@ queryUcsc <- \(query, params = NULL, genome = "hg38"){
     host = "genome-mysql.soe.ucsc.edu"
   )
   tryCatch({
-  if (is.null(params)) {
-    query <- DBI::dbGetQuery(con_ucsc, query)
-  } else {
-    query <- DBI::dbGetQuery(con_ucsc, query, params)
-  }},
-  return(query),
-  finally = {
-  DBI::dbDisconnect(con_ucsc)
-    return(query)
-  })
+      if (is.null(params)) {
+        query <- DBI::dbGetQuery(con_ucsc, query)
+      } else {
+        query <- DBI::dbGetQuery(con_ucsc, query, params)
+      }
+    },
+    finally = {
+      DBI::dbDisconnect(con_ucsc)
+      return(query)
+    }
+  )
 }
 
 # Exporting data is unorthodox - but this is tiny and almost universally needed

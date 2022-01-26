@@ -7,14 +7,16 @@
 callArmCna(segs, chr, threshold = 0.95, arms = bands)
 }
 \arguments{
-\item{chromosome}{the chromosome of interest.
-must match the format of the segment table}
-
-\item{segments}{data frame with CNA length,
+\item{segs}{data frame with CNA length,
 chromosome and direction ("gain","loss","normal") columns}
 
-\item{thershold}{float, the fraction of the chromosome
-needed to be in a direction to call. Default = 0.95}
+\item{chr}{the chromosome of interest.
+must match the format of the segment table}
+
+\item{threshold}{float, the fraction of the chromosome
+needed to be in a direction to call. Default = 0.9}
+
+\item{arms}{a table with the list of p and q arm location}
 }
 \value{
 a named vector with the arm and "gain", "loss", "normal" or NA.
