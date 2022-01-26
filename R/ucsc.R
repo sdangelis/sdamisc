@@ -12,13 +12,17 @@ queryUcsc <- \(query, params = NULL, genome = "hg38"){
     db = genome, user = "genome",
     host = "genome-mysql.soe.ucsc.edu"
   )
+  tryCatch({
   if (is.null(params)) {
     query <- DBI::dbGetQuery(con_ucsc, query)
   } else {
     query <- DBI::dbGetQuery(con_ucsc, query, params)
-  }
+  }},
+  return(query),
+  finally = {
   DBI::dbDisconnect(con_ucsc)
-  return(query)
+    return(query)
+  })
 }
 
 # Exporting data is unorthodox - but this is tiny and almost universally needed

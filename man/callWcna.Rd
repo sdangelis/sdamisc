@@ -29,8 +29,9 @@ from the length of all segments in the table
 
 if the given chromosome is not found returns NA.
 
-thresholds below < 0.5 have unspecified behavior
+thresholds below < 0.5 always return gains as long as it passes the threshold,
+regardless of whether there are more losses.
 }
 \seealso{
-\code{\link{callArmCna}}
+\code{\link{callArmCna}} \code{\link{fractionAltered}}
 }

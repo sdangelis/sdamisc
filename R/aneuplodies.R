@@ -12,7 +12,7 @@ fractionAltered <- \(segs) {
   gain <- sum(dplyr::filter(segs, direction == "gain")$length)
   loss <- sum(dplyr::filter(segs, direction == "loss")$length)
 
-  return(list("gained" = gain / tot, "lost" = loss / tot))
+  return(list("gain" = gain / tot, "loss" = loss / tot))
 }
 
 callWcna <- \(segs, chr, threshold = 0.95) {
@@ -21,7 +21,8 @@ callWcna <- \(segs, chr, threshold = 0.95) {
   #' @note This function estimates the length of the genome
   #' from the length of all segments in the table
   #' @note if the given chromosome is not found returns NA.
-  #' @note thresholds below < 0.5 have unspecified behavior
+  #' @note thresholds below < 0.5 always return gains as long as it passes the threshold,
+  #' regardless of whether there are more losses.
   #' @param chr the chromosome of interest. must match the format
   #' of the segment table
   #' @param segs data frame with CNA length,
@@ -30,7 +31,7 @@ callWcna <- \(segs, chr, threshold = 0.95) {
   #' in a direction to call. Default = 0.95
   #' @return "gain", "loss", "normal" or NA, a string with the status
   #' of the chromosome
-  #' @seealso \code{\link{callArmCna}}
+  #' @seealso \code{\link{callArmCna}} \code{\link{fractionAltered}}
   #' @export
 
   filtered_segs <- dplyr::filter(segs, chromosome == chr)
