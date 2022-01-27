@@ -56,7 +56,7 @@ callWcna <- \(segs, chr, threshold = 0.95) {
 
 
 
-callArmCna <- \(segs, chr, threshold = 0.95, arms = bands) {
+callArmCna <- \(segs, chr, threshold = 0.95, arms) {
   #' Wrapper around CallWcna() that calls chromosome arm aneuploidies
   #'
   #' @note This assumes that there is a gap around the centromere and
