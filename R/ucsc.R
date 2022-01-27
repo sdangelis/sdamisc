@@ -12,7 +12,8 @@ queryUcsc <- \(query, params = NULL, genome = "hg38") {
     db = genome, user = "genome",
     host = "genome-mysql.soe.ucsc.edu"
   )
-  tryCatch({
+  tryCatch(
+    {
       if (is.null(params)) {
         query <- DBI::dbGetQuery(con_ucsc, query)
       } else {

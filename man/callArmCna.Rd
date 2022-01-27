@@ -4,7 +4,7 @@
 \alias{callArmCna}
 \title{Wrapper around CallWcna() that calls chromosome arm aneuploidies}
 \usage{
-callArmCna(segs, chr, threshold = 0.95, arms = bands)
+callArmCna(segs, chr, threshold = 0.95, arms)
 }
 \arguments{
 \item{segs}{data frame with CNA length,

@@ -30,8 +30,8 @@ bed2Julia <- \(segs = NULL, file = NULL, name = "mycollection") {
 
   # assign tmp vectors
   JuliaCall::julia_assign("tmp1", segs[, 1])
-  JuliaCall::julia_assign("tmp2", segs[, 2])
-  JuliaCall::julia_assign("tmp3", segs[, 3])
+  JuliaCall::julia_assign("tmp2", as.integer(segs[, 2]))
+  JuliaCall::julia_assign("tmp3", as.integer(segs[, 3]))
 
   # generate interval collection
   JuliaCall::julia_command(paste0(
