@@ -1,9 +1,3 @@
-
-
-
-
-# Misc --------------------------------------------------------------------
-
 getName <- function(path) {
   #' extracts a file name from a path with leading /s and trailing extension
   #'
