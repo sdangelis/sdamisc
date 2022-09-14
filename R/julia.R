@@ -43,42 +43,126 @@ bed2Julia <- \(segs = NULL, file = NULL, name = "mycollection") {
 }
 
 
-# Unexported as GenomePermutations.jl is not publicly released yet
-# and breaking changes can occur
-plotPermResults <- \(results) {
+.parseC <- \(results){
+  #' private function to parse common stuff out of any GenomnePermutaiton.Jl permtest
+  #'
+  #' @param results the julia object from GenomePermutation's permtest
+  #' @seealso \code{\link{.parseZ}}, \code{\link{.parseS}}
+
+  return(list(
+    "iter" = JuliaCall::field(results, "iterations"),
+    "tested" = JuliaCall::field(results, "tested_regions"),
+    "randomised" = JuliaCall::field(results, "randomised_regions"),
+    "obs" = JuliaCall::field(results, "obs"),
+    "ran" = JuliaCall::field(results, "ran"),
+    "eval_function" = JuliaCall::field(results, "eval_function"),
+    "random_strategy" = JuliaCall::field(results, "random_strategy")
+  ))
+}
+
+.parseS <- \(results) {
+  #' internal functions to parse the results of a GenomnePermutaiton.Jl permtest
+  #' This version deals with the simple_P test
+  #'
+  #' @param results the julia object from GenomePermutation's permtest
+  #' @return a list with the fields:
+  #' iterm, tested, randomised, obs, ran, eval_function, random_strategy, P, test, notes
+  #' @note the notes field contains a line of information for plotting specific to each test
+  #' @seealso  \code{\link{.parseZ}}
+  return(purrr::flatten(list(
+    .parseC(results),
+    "p" = JuliaCall::field(results, "p_val"),
+    "test" = "Simple empirical p-test",
+    "notes" = paste(
+      "min p-value:", JuliaCall::field(JuliaCall::field(results, "test"), "min_p_val"),
+      "alternative:", JuliaCall::field(JuliaCall::field(results, "test"), "alternative")
+    )
+  )))
+}
+
+
+.parseZ <- \(results) {
+  #' internal functions to parse the results of a GenomnePermutaiton.Jl permtest
+  #' This version deals with the HypothesisTets.Z-test
+  #'
+  #' @param results the julia object from GenomePermutation's permtest
+  #' @return a list with the fields:
+  #' iterm, tested, randomised, obs, ran, eval_function, random_strategy, P, test, notes
+  #' @seealso  \code{\link{.parseS}}
+
+  JuliaCall::julia_install_package_if_needed("HypothesisTests")
+  JuliaCall::julia_library("HypothesisTests")
+  JuliaCall::julia_assign("tmp", results)
+  out <- (purrr::flatten(list(
+    .parseC(results),
+    "p" = JuliaCall::julia_eval("pvalue(tmp.test)"),
+    "test" = "Two sample z-test",
+    "notes" = paste(
+      "mean difference (ran-obs):",
+      JuliaCall::field(JuliaCall::field(results, "test"), "xbar"),
+      "CI:", julia_eval("confint(tmp.test)")[[1]], "-", julia_eval("confint(tmp.test)")[[2]]
+    )
+  )))
+  JuliaCall::julia_command("tmp = nothing") # can't delete tmp but can make tiny
+  return(out)
+}
+
+
+
+# Now exported as GenomePermutations.jl is not publicly released yet
+# parsing is abstracted away in .parseC, .parseS and .parseZ
+plotPermResults <- function(results, test) {
   #' Plots the permutation test in GenomePermutations.jl in ggplot2
   #'
-  #' @param results the Results from the permutation test in Julia
+  #' @param results the julia object from GenomePermutation's permtest
+  #' @param test the type of test, can (partially) match either "simple" or z-test"
   #' @returns the ggplot object
+  #' @export
+
+  # get fields
+  tests <- c("simple p test", "z-test")
+  t <- match.arg(tolower(test), tests)
+  if (t == tests[[1]]) {
+    res <- .parseS(results)
+  } else if (t == tests[[2]]) {
+    res <- .parseZ(results)
+  }
+
   ggplot2::ggplot() +
-    aes(field(results, "rand")) +
-    geom_histogram(binwidth = 1, fill = "grey41") +
+    aes(res[["ran"]]) +
+    geom_histogram(fill = "grey41") +
+    ggplot2::ggtitle(
+      label = paste0(
+        "Feature results of ", res[["tested"]], " with ",
+        res[["randomised"]]
+      ),
+      subtitle = paste0(
+        "p-value: ", res[["p_val"]], "iterations:", res[["iter"]], res[["notes"]]
+      )
+    ) +
     ggplot2::geom_vline(
-      xintercept = field(results, "obs"),
+      xintercept = mean(res[["obs"]]),
       linetype = "solid", color = "red", size = 1.5
     ) +
     ggplot2::geom_vline(
-      xintercept = mean(field(results, "rand")),
+      xintercept = mean(res[["ran"]]),
       linetype = "solid", color = "Black", size = 1.5
     ) +
     ggplot2::annotate("text",
-      x = field(results, "obs") + 1,
-      y = max(table(field(results, "rand"))), label = "Ev"
+      x = mean(res[["obs"]]) + 10,
+      y = res[["iter"]] / 20, label = "Ov"
     ) +
     ggplot2::annotate("text",
-      x = mean(field(results, "rand")) + 1,
-      y = max(table(field(results, "rand"))), label = "Ov"
+      x = mean(res[["ran"]]) + 10,
+      y = res[["iter"]] / 20, label = "Ev"
     ) +
     ggplot2::ggtitle(
       label = paste0(
-        "Feature results of ", field(results, "tested_regions"), " with ",
-        field(results, "randomised_regions")
+        "permutation result for ", res[["tested"]], " with ",
+        res[["randomised"]]
       ),
       subtitle = paste0(
-        "p-value: ", field(results, "p_val"), "\t minimum p-value ",
-        field(results, "min_p_val"),
-        "\nNumber of Permutations: ", field(results, "iterations"),
-        "\nAlternative: ", field(results, "alternative")
+        "p-value: ", res[["p"]], " iterations: ", res[["iter"]], "\n", res[["notes"]]
       )
     )
 }

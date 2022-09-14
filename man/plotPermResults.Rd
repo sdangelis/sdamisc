@@ -4,10 +4,12 @@
 \alias{plotPermResults}
 \title{Plots the permutation test in GenomePermutations.jl in ggplot2}
 \usage{
-plotPermResults(results)
+plotPermResults(results, test)
 }
 \arguments{
-\item{results}{the Results from the permutation test in Julia}
+\item{results}{the julia object from GenomePermutation's permtest}
+
+\item{test}{the type of test, can (partially) match either "simple" or z-test"}
 }
 \value{
 the ggplot object
